@@ -10,10 +10,13 @@ public class GridManager : MonoBehaviour
 
     Vector2 playGroundPivotPos = new Vector2(-3,3);
     int playGroundSize = 6;
-    BoxCollider2D boxCollider2D;
 
     [SerializeField]
     PlayerManager playerManager;
+    [SerializeField]
+    PlayerMovement playerMovement;
+
+    public LayerMask Walls;
 
     public Vector2[] moveAbleGrid = new Vector2[4];
 
@@ -26,25 +29,24 @@ public class GridManager : MonoBehaviour
     void Start(){
         GridManager.inst = this;
         grid = GetComponent<Grid>();
-        boxCollider2D = GetComponent<BoxCollider2D>();
 
         transform.position = Vector3.zero;
         grid.cellSize = Vector3.one;
-        boxCollider2D.size = Vector2.one * playGroundSize;
         
         rightWall = playGroundPivotPos.x + playGroundSize;
         bottomWall = playGroundPivotPos.y - playGroundSize;
         leftWall = playGroundPivotPos.x;
         topWall = playGroundPivotPos.y;
+
+        
     }
 
-    void Update(){
+    public void UpdateMoveAbleGrid()
+    {
         moveAbleGrid[0] = playerManager.currentPosGrid + Vector2.right;
         moveAbleGrid[1] = playerManager.currentPosGrid + Vector2.down;
         moveAbleGrid[2] = playerManager.currentPosGrid + Vector2.left;
         moveAbleGrid[3] = playerManager.currentPosGrid + Vector2.up;
-
-
 
         if (moveAbleGrid[0].x > rightWall)
         {
@@ -61,6 +63,14 @@ public class GridManager : MonoBehaviour
         if (moveAbleGrid[3].y > topWall)
         {
             moveAbleGrid[3] = Vector2.zero;
+        }
+
+        for (int i = 0; i < moveAbleGrid.Length; i++)
+        {
+            if (Physics2D.OverlapCircle(playerManager.currentPosGrid,2f,Walls))
+            {
+                moveAbleGrid[i] = Vector2.zero;
+            }
         }
     }
 }

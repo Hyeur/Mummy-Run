@@ -5,8 +5,6 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     PlayerMovement playerMovement;
-
-    Rigidbody2D playerRigid;
     public Vector2 currentPosGrid;
     Vector2 movement;
     Vector2 startPos = new Vector3(0,-3);
@@ -17,21 +15,26 @@ public class PlayerManager : MonoBehaviour
 
     void Start(){
         playerMovement = GetComponent<PlayerMovement>();
-        playerRigid = GetComponent<Rigidbody2D>();
 
 
-
-        playerRigid.MovePosition(startPos + truePos);
+        playerMovement.movePoint.position = startPos + truePos;
+        currentPosGrid = playerMovement.movePoint.position;
+        GridManager.inst.UpdateMoveAbleGrid();
 
     }
 
     void FixedUpdate(){
 
-       currentPosGrid = playerRigid.position;
+       currentPosGrid = playerMovement.movePoint.position;
 
        if (currentPosGrid != null) {
             
-            playerMovement.HandleMovement();     
+            playerMovement.HandleMovement();
        }
+    }
+
+    public Vector2 PlayerLocationInGrid()
+    {
+        return new Vector2(currentPosGrid.x + 2.5f, currentPosGrid.y - 2.5f);
     }
 }

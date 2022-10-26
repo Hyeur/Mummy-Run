@@ -10,51 +10,61 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     PlayerManager playerManager;
 
-    [SerializeField]
-    GridManager gridManager;
-    Rigidbody2D rgd_player;
+    public Transform movePoint;
     
     bool isMoving = false;
 
     float inputTimer = 0;
     float moveTimer = 0;
 
-    float moveTimeInterval = .8f;
+    public float moveTimeInterval = .5f;
+    public Transform myTransform;
     
-
-    float moveAmount = 1f;
     float speed;
 
     void Start(){
-        rgd_player = GetComponent<Rigidbody2D>();
         playerManager = GetComponent<PlayerManager>();
         speed = moveSpeed;
-
-        
-        
+        movePoint.parent = null;
     }
 
     void Update(){
-        moveTimer+= Time.deltaTime;
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
-        Debug.Log(movement);
-        if (movement == Vector2.zero && moveTimer > moveTimeInterval)
+        
+        if (movement != Vector2.zero)
         {
-            isMoving = false;
+            inputTimer+= Time.deltaTime;
         }
         else
         {
-            inputTimer+= Time.deltaTime;
-            if (inputTimer > moveTimeInterval)
-            {
-                isMoving = false;
-                inputTimer = 0;
-            }
+            inputTimer = 0;
+        }
+
+
+        moveTimer+= Time.deltaTime;
+
+        
+        transform.position = Vector3.MoveTowards(transform.position,movePoint.position, speed * Time.deltaTime);
+
+        if (Vector2.Distance(transform.position, movePoint.position) == 0)
+        {
+            myTransform = transform;
+            GridManager.inst.UpdateMoveAbleGrid();
+            isMoving = false;
+            Debug.Log(playerManager.PlayerLocationInGrid());
+
+        }
+        else
+        {
+            isMoving = true;
         }
     }
     
     public void HandleMovement(){
+        if (isMoving)
+            return;
+
         Vector2 targetPos = Vector2.zero;
         if (movement == Vector2.right) {
             targetPos = GridManager.inst.moveAbleGrid[0];
@@ -65,16 +75,9 @@ public class PlayerMovement : MonoBehaviour
         }  else if (movement == Vector2.up) {
             targetPos = GridManager.inst.moveAbleGrid[3];
         }
-
-        if (targetPos != Vector2.zero && !isMoving){
+        if (targetPos != Vector2.zero && moveTimer >= moveTimeInterval){
             isMoving = true;
-    
-            rgd_player.velocity = movement * speed * Time.fixedDeltaTime;
-            if (Vector2.Distance(playerManager.currentPosGrid,targetPos) <= 0.01f)
-            {
-                rgd_player.velocity = Vector2.zero;
-                rgd_player.position = targetPos;
-            }
+            movePoint.position = targetPos;
             moveTimer = 0;
         }
     }

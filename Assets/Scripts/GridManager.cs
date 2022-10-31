@@ -14,11 +14,12 @@ public class GridManager : MonoBehaviour
     [SerializeField]
     PlayerManager playerManager;
     [SerializeField]
-    PlayerMovement playerMovement;
+    MummyManager mummyManager;
 
-    public LayerMask Walls;
+    // public LayerMask Walls;
 
-    public Vector2[] moveAbleGrid = new Vector2[4];
+    public Vector2[] playerMoveAbleGrid = new Vector2[4];
+    public Vector2[] mummyMoveAbleGrid = new Vector2[4];
 
     float leftWall;
     float rightWall;
@@ -37,40 +38,85 @@ public class GridManager : MonoBehaviour
         bottomWall = playGroundPivotPos.y - playGroundSize;
         leftWall = playGroundPivotPos.x;
         topWall = playGroundPivotPos.y;
-
+        
         
     }
 
-    public void UpdateMoveAbleGrid()
+    public void UpdateMoveAbleGridForPlayer()
     {
-        moveAbleGrid[0] = playerManager.currentPosGrid + Vector2.right;
-        moveAbleGrid[1] = playerManager.currentPosGrid + Vector2.down;
-        moveAbleGrid[2] = playerManager.currentPosGrid + Vector2.left;
-        moveAbleGrid[3] = playerManager.currentPosGrid + Vector2.up;
+        playerMoveAbleGrid[0] = playerManager.currentPosGrid + Vector2.right;
+        playerMoveAbleGrid[1] = playerManager.currentPosGrid + Vector2.down;
+        playerMoveAbleGrid[2] = playerManager.currentPosGrid + Vector2.left;
+        playerMoveAbleGrid[3] = playerManager.currentPosGrid + Vector2.up;
 
-        if (moveAbleGrid[0].x > rightWall)
+        if (playerMoveAbleGrid[0].x > rightWall)
         {
-            moveAbleGrid[0] = Vector2.zero;
+            playerMoveAbleGrid[0] = Vector2.zero;
         }
-        if (moveAbleGrid[1].y < bottomWall)
+        if (playerMoveAbleGrid[1].y < bottomWall)
         {
-            moveAbleGrid[1] = Vector2.zero;
+            playerMoveAbleGrid[1] = Vector2.zero;
         }
-        if (moveAbleGrid[2].x < leftWall)
+        if (playerMoveAbleGrid[2].x < leftWall)
         {
-            moveAbleGrid[2] = Vector2.zero;
+            playerMoveAbleGrid[2] = Vector2.zero;
         }
-        if (moveAbleGrid[3].y > topWall)
+        if (playerMoveAbleGrid[3].y > topWall)
         {
-            moveAbleGrid[3] = Vector2.zero;
+            playerMoveAbleGrid[3] = Vector2.zero;
         }
 
-        for (int i = 0; i < moveAbleGrid.Length; i++)
+        for (int i = 0; i < playerMoveAbleGrid.Length; i++)
         {
-            if (Physics2D.OverlapCircle(playerManager.currentPosGrid,2f,Walls))
+            Vector2 direction = playerMoveAbleGrid[i] - playerManager.currentPosGrid;
+            RaycastHit2D hit= Physics2D.Raycast(playerManager.currentPosGrid,direction.normalized,direction.magnitude);
+
+            if (hit.collider != null)
             {
-                moveAbleGrid[i] = Vector2.zero;
+                Debug.DrawRay(playerManager.currentPosGrid,direction,Color.red);
+                playerMoveAbleGrid[i] = Vector2.zero;
             }
+            else Debug.DrawRay(playerManager.currentPosGrid,direction,Color.green);
         }
+    }
+
+    public void UpdateMoveAbleGridForMummy()
+    {
+        mummyMoveAbleGrid[0] = mummyManager.currentPosGrid + Vector2.right;
+        mummyMoveAbleGrid[1] = mummyManager.currentPosGrid + Vector2.down;
+        mummyMoveAbleGrid[2] = mummyManager.currentPosGrid + Vector2.left;
+        mummyMoveAbleGrid[3] = mummyManager.currentPosGrid + Vector2.up;
+
+        if (playerMoveAbleGrid[0].x > rightWall)
+        {
+            playerMoveAbleGrid[0] = Vector2.zero;
+        }
+        if (playerMoveAbleGrid[1].y < bottomWall)
+        {
+            playerMoveAbleGrid[1] = Vector2.zero;
+        }
+        if (playerMoveAbleGrid[2].x < leftWall)
+        {
+            playerMoveAbleGrid[2] = Vector2.zero;
+        }
+        if (playerMoveAbleGrid[3].y > topWall)
+        {
+            playerMoveAbleGrid[3] = Vector2.zero;
+        }
+
+
+        for (int i = 0; i < mummyMoveAbleGrid.Length; i++)
+        {
+            Vector2 direction = mummyMoveAbleGrid[i] - mummyManager.currentPosGrid;
+            RaycastHit2D hit= Physics2D.Raycast(mummyManager.currentPosGrid,direction.normalized,direction.magnitude);
+
+            if (hit.collider != null)
+            {
+                Debug.DrawRay(mummyManager.currentPosGrid,direction,Color.red);
+                mummyMoveAbleGrid[i] = Vector2.zero;
+            }
+            else Debug.DrawRay(mummyManager.currentPosGrid,direction,Color.green);
+        }
+
     }
 }

@@ -9,8 +9,10 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField]
     PlayerManager playerManager;
+    [SerializeField]
+    MummyManager mummyManager;
 
-    public Transform movePoint;
+    public Transform playerSprite;
     
     bool isMoving = false;
 
@@ -25,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
     void Start(){
         playerManager = GetComponent<PlayerManager>();
         speed = moveSpeed;
-        movePoint.parent = null;
+        playerSprite.parent = null;
     }
 
     void Update(){
@@ -44,16 +46,13 @@ public class PlayerMovement : MonoBehaviour
 
         moveTimer+= Time.deltaTime;
 
-        
-        transform.position = Vector3.MoveTowards(transform.position,movePoint.position, speed * Time.deltaTime);
-
-        if (Vector2.Distance(transform.position, movePoint.position) == 0)
+        playerSprite.position = Vector3.MoveTowards(playerSprite.position,transform.position + new Vector3(0,0.15f,0), speed * Time.deltaTime);
+        if (Vector2.Distance(transform.position, playerSprite.position) <= 0.16f)
         {
-            myTransform = transform;
-            GridManager.inst.UpdateMoveAbleGrid();
+            GridManager.inst.UpdateMoveAbleGridForPlayer();
             isMoving = false;
-            Debug.Log(playerManager.PlayerLocationInGrid());
 
+            // Debug.Log(playerManager.LocationInGrid());
         }
         else
         {
@@ -67,18 +66,26 @@ public class PlayerMovement : MonoBehaviour
 
         Vector2 targetPos = Vector2.zero;
         if (movement == Vector2.right) {
-            targetPos = GridManager.inst.moveAbleGrid[0];
+            targetPos = GridManager.inst.playerMoveAbleGrid[0];
         } else if (movement == Vector2.down) {
-            targetPos = GridManager.inst.moveAbleGrid[1];
+            targetPos = GridManager.inst.playerMoveAbleGrid[1];
         } else if (movement == Vector2.left) {
-            targetPos = GridManager.inst.moveAbleGrid[2];
+            targetPos = GridManager.inst.playerMoveAbleGrid[2];
         }  else if (movement == Vector2.up) {
-            targetPos = GridManager.inst.moveAbleGrid[3];
+            targetPos = GridManager.inst.playerMoveAbleGrid[3];
         }
         if (targetPos != Vector2.zero && moveTimer >= moveTimeInterval){
             isMoving = true;
-            movePoint.position = targetPos;
+            transform.position = targetPos;
             moveTimer = 0;
+            mummyManager.stepInx += 2;
+            mummyManager.toggleMove = true;
         }
+        // if (targetPos == Vector2.zero && moveTimer >= moveTimeInterval){
+        //     isMoving = true;
+        //     mummyManager.stepInx += 2;
+        //     moveTimer = 0;
+        // }
+        
     }
 }

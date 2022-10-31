@@ -17,15 +17,15 @@ public class PlayerManager : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
 
 
-        playerMovement.movePoint.position = startPos + truePos;
-        currentPosGrid = playerMovement.movePoint.position;
-        GridManager.inst.UpdateMoveAbleGrid();
+        playerMovement.transform.position = startPos + truePos;
+        currentPosGrid = transform.position;
+        // GridManager.inst.UpdateMoveAbleGridForPlayer();
 
     }
 
     void FixedUpdate(){
 
-       currentPosGrid = playerMovement.movePoint.position;
+       currentPosGrid = transform.position;
 
        if (currentPosGrid != null) {
             
@@ -33,8 +33,10 @@ public class PlayerManager : MonoBehaviour
        }
     }
 
-    public Vector2 PlayerLocationInGrid()
+    public Vector2 LocationInGrid()
     {
-        return new Vector2(currentPosGrid.x + 2.5f, currentPosGrid.y - 2.5f);
+        return currentPosGrid + Vector2.one * 2.5f;
     }
+
+    
 }

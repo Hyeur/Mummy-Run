@@ -23,7 +23,7 @@ public class PlayerManager : MonoBehaviour
 
     }
 
-    void FixedUpdate(){
+    void Update(){
 
        currentPosGrid = transform.position;
 

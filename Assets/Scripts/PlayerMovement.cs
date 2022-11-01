@@ -78,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
             isMoving = true;
             transform.position = targetPos;
             moveTimer = 0;
-            mummyManager.stepInx += 2;
+            mummyManager.stepInx += mummyManager.step;
             mummyManager.toggleMove = true;
         }
         // if (targetPos == Vector2.zero && moveTimer >= moveTimeInterval){

@@ -32,7 +32,7 @@ public class MummyManager : MonoBehaviour
         speed = moveSpeed;
         transform.position = startPos + truePos;
         currentPosGrid = transform.position;
-        stepInx = step;
+        stepInx = 0;
     }
     void FixedUpdate()
     {

@@ -34,18 +34,19 @@ public class MummyManager : MonoBehaviour
         currentPosGrid = transform.position;
         stepInx = 0;
     }
-    void FixedUpdate()
+    void Update()
     {
-        if (stepInx == 0)
+        if (stepInx <= 0)
         {
             toggleMove = false;
         }
+        else toggleMove = true;
 
         currentPosGrid = transform.position;
 
-        mummySprite.position = Vector2.MoveTowards(mummySprite.position,transform.position,speed * Time.deltaTime);
+        mummySprite.position = Vector3.MoveTowards(mummySprite.position,transform.position + new Vector3(0,0,-.2f),speed * Time.deltaTime);
 
-        if (Vector2.Distance(mummySprite.position, transform.position) == 0)
+        if (Vector2.Distance(mummySprite.position, transform.position) <= 0.2f)
         {
             isMoving = false;
         }
@@ -116,5 +117,10 @@ public class MummyManager : MonoBehaviour
     public Vector2 LocationInGrid()
     {
         return currentPosGrid + Vector2.one * 2.5f;
+    }
+
+    public IEnumerator addStep(){
+        yield return new WaitForSeconds(.2f);
+        stepInx = step;
     }
 }

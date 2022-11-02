@@ -28,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
         playerManager = GetComponent<PlayerManager>();
         speed = moveSpeed;
         playerSprite.parent = null;
+        
     }
 
     void Update(){
@@ -46,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
 
         moveTimer+= Time.deltaTime;
 
-        playerSprite.position = Vector3.MoveTowards(playerSprite.position,transform.position + new Vector3(0,0.15f,0), speed * Time.deltaTime);
+        playerSprite.position = Vector3.MoveTowards(playerSprite.position,transform.position + new Vector3(0,0.15f,-0.2f), speed * Time.deltaTime);
         if (Vector2.Distance(transform.position, playerSprite.position) <= 0.16f)
         {
             GridManager.inst.UpdateMoveAbleGridForPlayer();
@@ -78,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
             isMoving = true;
             transform.position = targetPos;
             moveTimer = 0;
-            mummyManager.stepInx += mummyManager.step;
+            StartCoroutine(mummyManager.addStep());
             mummyManager.toggleMove = true;
         }
         // if (targetPos == Vector2.zero && moveTimer >= moveTimeInterval){

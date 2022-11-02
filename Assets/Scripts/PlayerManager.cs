@@ -11,6 +11,8 @@ public class PlayerManager : MonoBehaviour
 
     Vector2 truePos = new Vector2(.5f,.5f);
 
+    public Transform lookAtTarget;
+
     
 
     void Start(){
@@ -30,6 +32,7 @@ public class PlayerManager : MonoBehaviour
        if (currentPosGrid != null) {
             
             playerMovement.HandleMovement();
+            LookAt();
        }
     }
 
@@ -38,5 +41,10 @@ public class PlayerManager : MonoBehaviour
         return currentPosGrid + Vector2.one * 2.5f;
     }
 
+    void LookAt(){
+        Quaternion lookRotation = Quaternion.LookRotation(lookAtTarget.position - transform.position);
+
+        transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation,0.1f);
+    }
     
 }

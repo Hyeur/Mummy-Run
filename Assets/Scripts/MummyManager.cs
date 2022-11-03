@@ -8,6 +8,8 @@ public class MummyManager : MonoBehaviour
     PlayerManager playerManager;
     public Vector2 currentPosGrid;
     public float moveSpeed;
+    
+    public Transform lookAtTarget;
 
     Vector2 movement;
     Vector2 startPos = new Vector3(-2,-2);
@@ -36,6 +38,7 @@ public class MummyManager : MonoBehaviour
     }
     void Update()
     {
+        LookAt();
         if (stepInx <= 0)
         {
             toggleMove = false;
@@ -122,5 +125,10 @@ public class MummyManager : MonoBehaviour
     public IEnumerator addStep(){
         yield return new WaitForSeconds(.2f);
         stepInx = step;
+    }
+    void LookAt(){
+        Quaternion lookRotation = Quaternion.LookRotation(transform.position - lookAtTarget.position );
+
+        mummySprite.rotation = Quaternion.Lerp(transform.rotation, lookRotation,0.1f);
     }
 }

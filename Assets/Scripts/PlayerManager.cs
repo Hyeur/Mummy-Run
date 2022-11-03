@@ -42,9 +42,9 @@ public class PlayerManager : MonoBehaviour
     }
 
     void LookAt(){
-        Quaternion lookRotation = Quaternion.LookRotation(lookAtTarget.position - transform.position);
+        Quaternion lookRotation = Quaternion.LookRotation(transform.position - lookAtTarget.position );
 
-        transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation,0.1f);
+        playerMovement.playerSprite.rotation = Quaternion.Lerp(transform.rotation, lookRotation,0.1f);
     }
     
 }

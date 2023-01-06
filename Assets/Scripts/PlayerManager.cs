@@ -4,28 +4,37 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
+    public static PlayerManager inst = null;
     PlayerMovement playerMovement;
     public Vector2 currentPosGrid;
     Vector2 movement;
-    Vector2 startPos = new Vector3(0,-3);
+    [SerializeField]
+    public Vector2 startPos;
 
-    Vector2 truePos = new Vector2(.5f,.5f);
+    Vector2 truePos = new Vector2(-2.5f,-2.5f);
 
     public Transform lookAtTarget;
 
+    public bool isStarted = false;
     
 
     void Start(){
+
+        PlayerManager.inst = this;
+
         playerMovement = GetComponent<PlayerMovement>();
 
-
-        playerMovement.transform.position = startPos + truePos;
-        currentPosGrid = transform.position;
+        
         // GridManager.inst.UpdateMoveAbleGridForPlayer();
 
     }
 
     void Update(){
+
+        if(!this.isStarted){
+            playerMovement.transform.position = startPos + truePos;
+            currentPosGrid = transform.position;
+        }
 
        currentPosGrid = transform.position;
 

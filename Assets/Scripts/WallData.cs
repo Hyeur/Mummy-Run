@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class WallData
 {
-    public Transform spawnPoint {get;set;}
-
-    public WallData(Transform t){
-        spawnPoint = t;
+    public float[,] vertical;
+    public float[,] horizontal;
+    
+    public WallData(float[,] _vertical,float[,] _horizontal)
+    {
+        this.vertical = _vertical;
+        this.horizontal = _horizontal;
     }
 }

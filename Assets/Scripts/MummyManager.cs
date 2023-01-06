@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class MummyManager : MonoBehaviour
 {
+
+    public static MummyManager inst = null;
+
     [SerializeField]
     PlayerManager playerManager;
     public Vector2 currentPosGrid;
@@ -12,9 +15,10 @@ public class MummyManager : MonoBehaviour
     public Transform lookAtTarget;
 
     Vector2 movement;
-    Vector2 startPos = new Vector3(-2,-2);
+    [SerializeField]
+    public Vector2 startPos;
 
-    Vector2 truePos = new Vector2(.5f,.5f);
+    Vector2 truePos = new Vector2(-2.5f,-2.5f);
 
     public int step = 2;
 
@@ -26,18 +30,28 @@ public class MummyManager : MonoBehaviour
     // [HideInInspector]
     public int stepInx;
 
+    public bool isStarted = false;
+
     public Transform mummySprite;
 
     void Start()
     {
+        MummyManager.inst = this;
+
         mummySprite.parent = null;
         speed = moveSpeed;
-        transform.position = startPos + truePos;
-        currentPosGrid = transform.position;
+        
+        
         stepInx = 0;
     }
     void Update()
     {
+
+        if (!isStarted){
+            transform.position = startPos + truePos;
+            currentPosGrid = transform.position;
+        }
+
         LookAt();
         if (stepInx <= 0)
         {
@@ -96,7 +110,6 @@ public class MummyManager : MonoBehaviour
             return;
 
         updateNextStepDirection();
-        Debug.Log(movement);
         Vector2 targetPos = Vector2.zero;
         if (movement == Vector2.right) {
             targetPos = GridManager.inst.mummyMoveAbleGrid[0];
@@ -111,10 +124,12 @@ public class MummyManager : MonoBehaviour
             isMoving = true;
             transform.position = targetPos;   
             stepInx--;
+            this.isStarted = true;
         }
         if (targetPos == Vector2.zero && stepInx > 0){
             isMoving = true;
             stepInx--;
+            this.isStarted = true;
         }
     }
     public Vector2 LocationInGrid()

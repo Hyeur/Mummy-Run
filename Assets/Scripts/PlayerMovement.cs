@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
     MummyManager mummyManager;
 
     public Transform playerSprite;
-    
+
     bool isMoving = false;
 
     float inputTimer = 0;
@@ -21,23 +21,25 @@ public class PlayerMovement : MonoBehaviour
 
     public float moveTimeInterval = .5f;
     public Transform myTransform;
-    
+
     float speed;
 
-    void Start(){
+    void Start()
+    {
         playerManager = GetComponent<PlayerManager>();
         speed = moveSpeed;
         playerSprite.parent = null;
-        
+
     }
 
-    void Update(){
+    void Update()
+    {
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
-        
+
         if (movement != Vector2.zero)
         {
-            inputTimer+= Time.deltaTime;
+            inputTimer += Time.deltaTime;
         }
         else
         {
@@ -45,14 +47,13 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
-        moveTimer+= Time.deltaTime;
+        moveTimer += Time.deltaTime;
 
-        playerSprite.position = Vector3.MoveTowards(playerSprite.position,transform.position + new Vector3(0,0.15f,-0.2f), speed * Time.deltaTime);
+        playerSprite.position = Vector3.MoveTowards(playerSprite.position, transform.position + new Vector3(0, 0.15f, -0.2f), speed * Time.deltaTime);
         if (Vector2.Distance(transform.position, playerSprite.position) <= 0.16f)
         {
             GridManager.inst.UpdateMoveAbleGridForPlayer();
             isMoving = false;
-
             // Debug.Log(playerManager.LocationInGrid());
         }
         else
@@ -60,24 +61,34 @@ public class PlayerMovement : MonoBehaviour
             isMoving = true;
         }
     }
-    
-    public void HandleMovement(){
+
+    public void HandleMovement()
+    {
         if (isMoving)
             return;
 
         Vector2 targetPos = Vector2.zero;
-        if (movement == Vector2.right) {
+        if (movement == Vector2.right)
+        {
             targetPos = GridManager.inst.playerMoveAbleGrid[0];
-        } else if (movement == Vector2.down) {
+        }
+        else if (movement == Vector2.down)
+        {
             targetPos = GridManager.inst.playerMoveAbleGrid[1];
-        } else if (movement == Vector2.left) {
+        }
+        else if (movement == Vector2.left)
+        {
             targetPos = GridManager.inst.playerMoveAbleGrid[2];
-        }  else if (movement == Vector2.up) {
+        }
+        else if (movement == Vector2.up)
+        {
             targetPos = GridManager.inst.playerMoveAbleGrid[3];
         }
-        if (targetPos != Vector2.zero && moveTimer >= moveTimeInterval){
+        if (targetPos != Vector2.zero && moveTimer >= moveTimeInterval)
+        {
             isMoving = true;
             transform.position = targetPos;
+            PlayerManager.inst.isStarted = true;
             moveTimer = 0;
             StartCoroutine(mummyManager.addStep());
             mummyManager.toggleMove = true;
@@ -87,6 +98,6 @@ public class PlayerMovement : MonoBehaviour
         //     mummyManager.stepInx += 2;
         //     moveTimer = 0;
         // }
-        
+
     }
 }
